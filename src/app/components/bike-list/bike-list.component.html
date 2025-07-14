@@ -1,0 +1,27 @@
+<section class="container my-5 py-4 rounded-4 bike-section">
+    <h3 class="text-center mb-5 bai-jamjuree-bold-italic text-white display-6">Le nostre bici</h3>
+    <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-light me-2" (click)="prev()" [disabled]="currentIndex === 0">
+            ‹
+        </button>
+        <div class="row flex-nowrap overflow-visible w-100 justify-content-center mx-auto">
+            <div *ngFor="let bike of visibleBikes" class="col">
+                <div class="card h-100 shadow bike-card border-0 mx-2">
+                    <img [src]="bike.imgUrl" class="card-img-top bike-img" [alt]="bike.descrizione">
+                    <div class="card-body text-center">
+                        <h5 class="card-title bai-jamjuree-bold text-white">{{ bike.type }}</h5>
+                        <p class="card-text text-light">{{ bike.descrizione }}</p>
+                        <div class="bike-price mb-3 text-light">Da <span class="fw-bold text-danger">{{ bike.prezzo
+                                }}€</span>/giorno</div>
+                        <button [routerLink]="['/reservation']"
+                            class="btn my-red-btn bai-jamjuree-semibold px-4">Prenota</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-outline-light ms-2" (click)="next()"
+            [disabled]="currentIndex >= bikes.length - visibleCount">
+            ›
+        </button>
+    </div>
+</section>

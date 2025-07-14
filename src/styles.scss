@@ -1,0 +1,19 @@
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Bai Jamjuree", sans-serif;
+}
+
+/* 3. Forza il componente principale di Angular (app-root) ad occupare l'intera altezza */
+app-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* FONDAMENTALE: L'app sarà alta ALMENO quanto l'altezza dello schermo */
+    width: 100%;
+}

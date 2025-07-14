@@ -1,0 +1,29 @@
+<app-navbar></app-navbar>
+<div class="container py-4">
+  <h2 class="mb-4">Classifica partecipanti iscritti</h2>
+  <div *ngIf="loading">Caricamento...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <table class="table table-striped" *ngIf="!loading && iscritti.length">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Partite giocate</th>
+        <th>Partite vinte</th>
+        <th>% Vittorie</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of iscritti; let i = index">
+        <td>{{ user.partiteGiocate >= 5 ? i + 1 : '-' }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.partiteGiocate }}</td>
+        <td>{{ user.partiteVinte }}</td>
+        <td>{{ user.percentualeVittorie }}%</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!loading && !iscritti.length" class="text-muted">Nessun partecipante trovato.</div>
+</div> 

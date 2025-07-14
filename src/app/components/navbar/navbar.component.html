@@ -1,0 +1,29 @@
+<header id="main-header" class="shadow-sm py-3 px-4 d-flex justify-content-between align-items-center transition-header fixed-top" [ngClass]="{ 'transparent-header': !isScrolled, 'scrolled-header': isScrolled, 'navbar-light': navbarLight, 'navbar-dark': !navbarLight }">
+  <div class="d-flex align-items-center">
+    <span class="h4 m-0 my-secondary-color bai-jamjuree-bold-italic">Ping Pong by Gualti</span>
+  </div>
+  <nav class="flex-grow-1 d-flex justify-content-center">
+    <ng-container *ngIf="user && (user.isOperator || user.iscritto)">
+      <a [routerLink]="['/dashboard']" class="text-decoration-none me-3 navbar-link-color bai-jamjuree-medium">Home</a>
+    </ng-container>
+    <ng-container *ngIf="user && user.isOperator && user.iscritto">
+      <a [routerLink]="['/organizer/incontri']" class="text-decoration-none me-3 navbar-link-color bai-jamjuree-medium">Gestione Incontri</a>
+      <a [routerLink]="['/iscritti']" class="text-decoration-none navbar-link-color bai-jamjuree-medium">Classifica</a>
+    </ng-container>
+    <ng-container *ngIf="user && !user.isOperator && user.iscritto">
+      <a [routerLink]="['/incontri']" class="text-decoration-none me-3 navbar-link-color bai-jamjuree-medium">Incontri</a>
+      <a [routerLink]="['/iscritti']" class="text-decoration-none navbar-link-color bai-jamjuree-medium">Classifica</a>
+    </ng-container>
+    <!-- Nessun link per non iscritto/non operatore -->
+  </nav>
+  <nav class="dropdown">
+    <a id="profile-dropdown-toggle" class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" role="button" (click)="toggleDropdown(); $event.preventDefault()">
+      <img src="../../../assets/images/profile-red.png" class="rounded-circle" height="50" />
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end custom-dropdown-position" [class.show]="isDropdownOpen" aria-labelledby="navbarDropdownMenuAvatar" *ngIf="isDropdownOpen">
+      <li>
+        <button class="dropdown-item navbar-link-color" (click)="logout()">Logout</button>
+      </li>
+    </ul>
+  </nav>
+</header>

@@ -1,0 +1,65 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dashboard Organizzatore</h2>
+    <button class="btn btn-primary" routerLink="/organizer/statistics">Statistiche Eventi Passati</button>
+  </div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <section>
+    <h3>Gestione Eventi</h3>
+    <button class="btn btn-success mb-2" (click)="openForm()">Aggiungi Evento</button>
+    <div *ngIf="loading">Caricamento eventi...</div>
+    <table class="table table-striped" *ngIf="events.length">
+      <thead>
+        <tr>
+          <th>Titolo</th>
+          <th>Data</th>
+          <th>Descrizione</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let event of events">
+          <td>{{ event.title }}</td>
+          <td>{{ event.date | date:'shortDate' }}</td>
+          <td>{{ event.description }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm me-1" (click)="openForm(event)">Modifica</button>
+            <button class="btn btn-danger btn-sm me-1" (click)="deleteEvent(event.id!)">Elimina</button>
+            <button class="btn btn-secondary btn-sm" (click)="goToCheckin(event)" [disabled]="!canCheckin(event)">Check-in</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loading && !events.length" class="text-muted">Nessun evento presente.</div>
+  </section>
+
+  <!-- Form evento -->
+  <div *ngIf="showForm" class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.3)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ isEdit ? 'Modifica Evento' : 'Nuovo Evento' }}</h5>
+          <button type="button" class="btn-close" (click)="closeForm()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Titolo</label>
+            <input class="form-control" [(ngModel)]="form.title" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Data</label>
+            <input class="form-control" type="date" [(ngModel)]="form.date" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descrizione</label>
+            <textarea class="form-control" [(ngModel)]="form.description"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeForm()">Annulla</button>
+          <button class="btn btn-success" (click)="saveEvent()">Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,51 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Statistiche Eventi Passati</h2>
+    <button class="btn btn-secondary" routerLink="/organizer">Torna alla Dashboard</button>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover" *ngIf="statistics.length">
+          <thead class="table-light">
+            <tr>
+              <th>Titolo</th>
+              <th>Data</th>
+              <th class="text-center">Iscrizioni Totali</th>
+              <th class="text-center">Check-in Effettuati</th>
+              <th class="text-center">Percentuale Partecipazione</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stat of statistics">
+              <td class="fw-bold">{{ stat.event.title }}</td>
+              <td>{{ stat.event.date | date:'dd/MM/yyyy' }}</td>
+              <td class="text-center">
+                <span class="badge bg-primary">{{ stat.totalInscriptions }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-success">{{ stat.checkIns }}</span>
+              </td>
+              <td class="text-center">
+                <span [ngClass]="{
+                  'badge': true,
+                  'bg-success': stat.participationRate >= 70,
+                  'bg-warning': stat.participationRate >= 40 && stat.participationRate < 70,
+                  'bg-danger': stat.participationRate < 40
+                }">
+                  {{ stat.participationRate | number:'1.0-0' }}%
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="!statistics.length && !error" class="text-center text-muted py-4">
+        <i class="bi bi-calendar-x"></i> Nessun evento passato disponibile
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,112 @@
+.bai-jamjuree-extralight {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}
+
+.bai-jamjuree-light {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.bai-jamjuree-regular {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.bai-jamjuree-medium {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.bai-jamjuree-semibold {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.bai-jamjuree-bold {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.bai-jamjuree-extralight-italic {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 200;
+    font-style: italic;
+}
+
+.bai-jamjuree-light-italic {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+}
+
+.bai-jamjuree-regular-italic {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.bai-jamjuree-medium-italic {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.bai-jamjuree-semibold-italic {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.bai-jamjuree-bold-italic {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.my-bg-black {
+    --bs-bg-opacity: 1;
+    background-color: #1a1a1a !important;
+}
+
+.my-secondary-color {
+    --bs-text-opacity: 1;
+    color: #FB2C50 !important;
+}
+
+.my-red-btn {
+    background-color: #FB2C50;
+    color: #fff;
+    border-radius: 5px;
+    padding: 0.5rem 2rem;
+    transition: background-color 0.3s ease;
+}
+
+.my-red-btn:hover {
+    background-color: #d82244;
+}
+
+.my-red-btn-opposite {
+    background-color: white;
+    color: #FB2C50;
+    border-radius: 5px;
+    padding: 0.5rem 2rem;
+    transition: background-color 0.3s ease;
+    border: 1px solid #FB2C50;
+}
+
+.my-red-btn-opposite:hover {
+    color: #d82244;
+    background-color: lightgray;
+}
+
+.my-bg-black {
+    --bs-bg-opacity: 1;
+    background-color: #1a1a1a !important;
+}

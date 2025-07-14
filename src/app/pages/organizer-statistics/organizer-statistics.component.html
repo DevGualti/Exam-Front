@@ -1,0 +1,25 @@
+<div class="container py-4">
+  <h2>Statistiche Eventi Passati</h2>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <table class="table table-bordered mt-4" *ngIf="statistics.length">
+    <thead>
+      <tr>
+        <th>Titolo</th>
+        <th>Data</th>
+        <th>Iscrizioni Totali</th>
+        <th>Check-in Effettuati</th>
+        <th>Percentuale Partecipazione</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stat of statistics">
+        <td>{{ stat.event.title }}</td>
+        <td>{{ stat.event.date | date:'dd/MM/yyyy' }}</td>
+        <td>{{ stat.totalInscriptions }}</td>
+        <td>{{ stat.checkIns }}</td>
+        <td>{{ stat.participationRate | number:'1.0-0' }}%</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!statistics.length && !error" class="text-muted">Nessun evento passato disponibile.</div>
+</div> 

@@ -1,0 +1,115 @@
+<app-navbar></app-navbar>
+<div class="container py-4">
+  <h2 class="mb-4">Gestione incontri</h2>
+  <button class="btn btn-success mb-3" (click)="openCreateModal()">Crea nuovo incontro</button>
+  <div *ngIf="loading">Caricamento...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="alertMsg" class="alert alert-{{alertType}} position-absolute top-0 start-50 translate-middle-x mt-4" style="z-index:10; min-width:300px; text-align:center;">
+    {{ alertMsg }}
+  </div>
+  <div *ngIf="overlayMsg" class="overlay-alert d-flex align-items-center justify-content-center">
+    <div class="alert alert-{{overlayType}} shadow-lg px-5 py-3 fs-5">
+      {{ overlayMsg }}
+    </div>
+  </div>
+  <table class="table table-striped" *ngIf="!loading && incontri.length">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Partecipante 1</th>
+        <th>Partecipante 2</th>
+        <th>Punteggio</th>
+        <th>Stato</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of incontri">
+        <td>{{ i.date | date:'short' }}</td>
+        <td>{{ i.partecipante1?.name || '-' }}</td>
+        <td>{{ i.partecipante2?.name || '-' }}</td>
+        <td>
+          <ng-container *ngIf="i.giocato; else dash">{{ i.punti1 }} - {{ i.punti2 }}</ng-container>
+          <ng-template #dash>N/A</ng-template>
+        </td>
+        <td>
+          <span *ngIf="i.giocato" class="badge bg-success">Disputato</span>
+          <span *ngIf="!i.giocato" class="badge bg-secondary">Non disputato</span>
+        </td>
+        <td>
+          <button class="btn btn-primary btn-sm me-1" (click)="openEditModal(i)"><i class="bi bi-pencil"></i> Modifica</button>
+          <button class="btn btn-danger btn-sm" (click)="openDeleteModal(i)"><i class="bi bi-trash"></i> Elimina</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!loading && !incontri.length" class="text-muted">Nessun incontro trovato.</div>
+
+  <!-- Modal Bootstrap -->
+  <div class="modal fade show d-block" tabindex="-1" *ngIf="modalOpen" style="background:rgba(0,0,0,0.4)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header my-bg-black text-white">
+          <h5 class="modal-title text-dark">{{ modalMode === 'edit' ? 'Modifica incontro' : 'Crea nuovo incontro' }}</h5>
+          <button type="button" class="btn-close btn-close-black" (click)="closeModal()"></button>
+        </div>
+        <form (ngSubmit)="submitModal()">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Data</label>
+              <input type="datetime-local" class="form-control" [(ngModel)]="modalData.date" name="date" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Partecipante 1</label>
+              <select class="form-select" [(ngModel)]="modalData.partecipante1" name="partecipante1" required [compareWith]="compareUser">
+                <option *ngFor="let u of usersIscritti" [ngValue]="u._id || u.id">{{ u.name }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Partecipante 2</label>
+              <select class="form-select" [(ngModel)]="modalData.partecipante2" name="partecipante2" required [compareWith]="compareUser">
+                <option *ngFor="let u of usersIscritti" [ngValue]="u._id || u.id">{{ u.name }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Punteggio</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" class="form-control" [(ngModel)]="modalData.punti1" name="punti1" min="0" style="max-width:80px" />
+                <span>-</span>
+                <input type="number" class="form-control" [(ngModel)]="modalData.punti2" name="punti2" min="0" style="max-width:80px" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Stato</label>
+              <select class="form-select" [(ngModel)]="modalData.giocato" name="giocato">
+                <option [ngValue]="true">Disputato</option>
+                <option [ngValue]="false">Non disputato</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Annulla</button>
+            <button type="submit" class="btn my-red-btn">Salva</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Modal conferma eliminazione -->
+  <div class="modal fade show d-block" tabindex="-1" *ngIf="confirmDeleteId" style="background:rgba(0,0,0,0.4)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark">Conferma eliminazione</h5>
+        </div>
+        <div class="modal-body">
+          <p>Sei sicuro di voler eliminare questo incontro?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelDelete()">Annulla</button>
+          <button type="button" class="btn btn-danger" (click)="doDelete()">Elimina</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

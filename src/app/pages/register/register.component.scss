@@ -1,0 +1,41 @@
+.login-section {
+    height: 100vh;
+}
+
+.login-image {
+    background: url('../../../assets/images/homelogin.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+.login-form-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 400px;
+}
+
+.btn-primary {
+    background-color: #FB2C50;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #FB2C50;
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(251, 44, 80, 0.25);
+}
+
+
+@media (max-width: 768px) {
+    .login-image {
+        display: none;
+    }
+}

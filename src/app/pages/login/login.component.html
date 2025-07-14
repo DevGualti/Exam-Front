@@ -1,0 +1,45 @@
+<div class="container-fluid login-section">
+    <div class="row h-100">
+        <!-- Colonna immagine -->
+        <div class="col-md-6 login-image d-none d-md-block"  style="background: url('../../../assets/images/ping-pong-login.jpg') no-repeat center center"></div>
+
+        <!-- Colonna login -->
+        <div class="col-md-6 login-form-wrapper my-bg-black">
+            <div class="login-box">
+                <h2 class="mb-4 text-center text-white bai-jamjuree-semibold bai-jamjuree-bold-italic my-secondary-color">Ping pong By Gualti</h2>
+                <form [formGroup]="loginForm" (ngSubmit)="login()">
+                    <div class="mb-3">
+                        <label for="username" class="form-label text-white bai-jamjuree-medium">Email o username</label>
+                        <input type="email" class="form-control bai-jamjuree-medium" id="username"
+                            formControlName="email" placeholder="email@esempio.com" [class.is-invalid]="loginForm.get('email')?.invalid
+                                    && (loginForm.get('email')?.dirty
+                                    || loginForm.get('email')?.touched
+                                    || isSubmitted)" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label text-white bai-jamjuree-medium">Password</label>
+                        <input type="password" class="form-control bai-jamjuree-medium" id="password"
+                            formControlName="password" placeholder="••••••••" [class.is-invalid]="loginForm.get('password')?.invalid
+                            && (loginForm.get('password')?.dirty
+                            || loginForm.get('password')?.touched
+                            || isSubmitted)" />
+                    </div>
+
+                    <div class="alert alert-danger d-flex align-items-center gap-2 p-2" *ngIf="loginError">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span> {{ loginError }}</span>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn my-red-btn bai-jamjuree-bold-italic">Entra</button>
+                    </div>
+                    <div class="text-center">
+                        <small class="text-white bai-jamjuree-regular">Non hai un account? <a
+                                [routerLink]="['/register']"
+                                class="text-decoration-none bai-jamjuree-regular">Registrati</a></small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

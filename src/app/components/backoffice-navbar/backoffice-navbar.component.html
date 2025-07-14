@@ -1,0 +1,53 @@
+<div class="backoffice-global-header-container">
+    <header class="app-backoffice-title-header">
+        <h1><i class="fas fa-tachometer-alt"></i> Pannello di Controllo RideClone</h1>
+        <p>Benvenuto nel sistema di gestione noleggio biciclette.</p>
+        <div class="user-profile-menu">
+  <button class="profile-trigger" (click)="toggleDropdown($event)" title="Profilo">
+    <i class="fas fa-user-circle"></i>
+  </button>
+
+  <div class="dropdown-menu-user" *ngIf="isDropdownOpen">
+    <a routerLink="/home" class="dropdown-item-user" (click)="closeDropdown()">
+      <i class="fas fa-home fa-fw"></i>
+      <span>Home</span>
+    </a>
+    <button class="dropdown-item-user" (click)="logout()">
+      <i class="fas fa-sign-out-alt fa-fw"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</div>
+    </header>
+
+  <nav class="management-sections-bar">
+    <a routerLink="/backoffice/gestioneprenotazioni" class="management-link-card" routerLinkActive="active-link">
+      <i class="fas fa-calendar-alt"></i>
+      <span>Gestione Prenotazioni</span>
+    </a>
+    <a routerLink="/backoffice/puntivendita" class="management-link-card" routerLinkActive="active-link">
+      <i class="fas fa-store"></i>
+      <span>Punti Vendita</span>
+    </a>
+    <a routerLink="/backoffice/gestionebiciclette" class="management-link-card" routerLinkActive="active-link">
+      <i class="fas fa-bicycle"></i>
+      <span>Gestione Biciclette</span>
+    </a>
+    <a routerLink="/backoffice/gestioneprezzi" class="management-link-card" routerLinkActive="active-link">
+      <i class="fas fa-tags"></i>
+      <span>Gestione Prezzi</span>
+    </a>
+    <a routerLink="/backoffice/gestione-operatori" class="management-link-card" routerLinkActive="active-link">
+      <i class="fas fa-users-cog"></i>
+      <span>Gestione Operatori</span>
+    </a>
+    <a routerLink="/backoffice/pagina-manutenzioni" class="management-link-card" routerLinkActive="active-link">
+      <i class="fas fa-tools"></i>
+      <span>Manutenzione</span>
+    </a>
+    <a routerLink="/backoffice/home" class="management-link-card" routerLinkActive="active-link">
+      <i class="fas fa-home"></i>
+      <span>Backoffice Home</span>
+    </a>
+  </nav>
+</div>

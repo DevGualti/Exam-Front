@@ -1,0 +1,39 @@
+<div class="container py-4">
+  <button class="btn btn-secondary mb-3" routerLink="/organizer">Torna alla Dashboard</button>
+  <h2>Check-in per evento</h2>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="inscriptions.length">
+    <h4>{{ getEventTitle() }}
+      <span class="text-muted">
+        ({{ getEventDate() }})
+      </span>
+    </h4>
+    <p>{{ getEventDescription() }}</p>
+  </div>
+  <table class="table table-bordered mt-4" *ngIf="inscriptions.length">
+    <thead>
+      <tr>
+        <th>Nome utente</th>
+        <th>Email</th>
+        <th>Check-in</th>
+        <th>Data check-in</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ins of inscriptions">
+        <td>{{ getUserNameFromIns(ins) }}</td>
+        <td>{{ getUserEmailFromIns(ins) }}</td>
+        <td>
+          <span *ngIf="ins.checkedIn" class="badge bg-success">Effettuato</span>
+          <span *ngIf="!ins.checkedIn" class="badge bg-secondary">Non effettuato</span>
+        </td>
+        <td>{{ ins.dateCheckIn | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>
+          <button class="btn btn-success btn-sm" (click)="doCheckin(ins)" [disabled]="ins.checkedIn">Registra check-in</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!inscriptions.length && !error" class="text-muted">Nessun iscritto a questo evento.</div>
+</div> 

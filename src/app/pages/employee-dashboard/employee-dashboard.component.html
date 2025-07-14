@@ -1,0 +1,25 @@
+<app-navbar></app-navbar>
+<div class="home-bg-img position-fixed top-0 start-0 w-100 h-100"></div>
+<div class="home-overlay d-flex flex-column align-items-center justify-content-center">
+  <div *ngIf="alertMsg" class="alert alert-{{alertType}} position-absolute top-0 start-50 translate-middle-x mt-4" style="z-index:10; min-width:300px; text-align:center;">
+    {{ alertMsg }}
+  </div>
+  <div class="row mb-4 justify-content-center w-100">
+    <div class="col-md-6 mb-3">
+      <button class="big-action-btn home-btn-iscrizione w-100" [disabled]="iscritto" (click)="!iscritto && iscrivi()">
+        <span class="action-text">
+          <ng-container *ngIf="iscritto; else iscriviti">Sei iscritto</ng-container>
+          <ng-template #iscriviti>Iscriviti a un torneo</ng-template>
+        </span>
+      </button>
+    </div>
+    <div class="col-md-6 mb-3">
+      <button class="big-action-btn home-btn-organizzazione w-100" [disabled]="user?.isOperator" (click)="!user?.isOperator && diventaOrganizzatore()">
+        <span class="action-text">
+          <ng-container *ngIf="user?.isOperator; else diventaOp">Sei organizzatore</ng-container>
+          <ng-template #diventaOp>Diventa operatore</ng-template>
+        </span>
+      </button>
+    </div>
+  </div>
+</div> 
