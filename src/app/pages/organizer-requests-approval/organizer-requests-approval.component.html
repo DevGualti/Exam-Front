@@ -1,10 +1,7 @@
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Dashboard Organizzatore</h2>
-    <button class="btn btn-primary" routerLink="/organizer/requests-approval">Richieste da approvare</button>
-    <button class="btn btn-outline-primary ms-2" routerLink="/organizer/categories">Gestione categorie</button>
-    <button class="btn btn-info ms-2" routerLink="/organizer/statistics">Statistiche</button>
-    <button class="btn btn-outline-danger ms-auto" (click)="auth.logout()">Logout</button>
+    <h2>Richieste da approvare</h2>
+    <button class="btn btn-secondary" routerLink="/organizer">Torna alla dashboard</button>
   </div>
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
   <section>

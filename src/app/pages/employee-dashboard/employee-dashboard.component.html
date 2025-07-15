@@ -1,25 +1,189 @@
-<app-navbar></app-navbar>
-<div class="home-bg-img position-fixed top-0 start-0 w-100 h-100"></div>
-<div class="home-overlay d-flex flex-column align-items-center justify-content-center">
-  <div *ngIf="alertMsg" class="alert alert-{{alertType}} position-absolute top-0 start-50 translate-middle-x mt-4" style="z-index:10; min-width:300px; text-align:center;">
-    {{ alertMsg }}
-  </div>
-  <div class="row mb-4 justify-content-center w-100">
-    <div class="col-md-6 mb-3">
-      <button class="big-action-btn home-btn-iscrizione w-100" [disabled]="iscritto" (click)="!iscritto && iscrivi()">
-        <span class="action-text">
-          <ng-container *ngIf="iscritto; else iscriviti">Sei iscritto</ng-container>
-          <ng-template #iscriviti>Iscriviti a un torneo</ng-template>
-        </span>
-      </button>
+<div class="container py-4">
+  <button class="btn btn-outline-danger float-end mt-2" (click)="logout()">Logout</button>
+  <h2>Dashboard Dipendente</h2>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <section class="mt-4">
+    <h3>Le tue richieste</h3>
+    <button class="btn btn-success mb-3" (click)="openAddRequestModal()">Aggiungi richiesta</button>
+    <div *ngIf="loadingRequests">Caricamento richieste...</div>
+    <table class="table table-bordered" *ngIf="requests.length">
+      <thead>
+        <tr>
+          <th>Oggetto</th>
+          <th>Categoria</th>
+          <th>Quantità</th>
+          <th>Costo Unitario</th>
+          <th>Motivazione</th>
+          <th>Stato</th>
+          <th>Data Creazione</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let req of requests">
+          <td>{{ req.oggetto }}</td>
+          <td>{{ req.categoria?.descrizione || req.categoria }}</td>
+          <td>{{ req.quantity }}</td>
+          <td>{{ req.costoUnitario | currency:'EUR' }}</td>
+          <td>{{ req.motivazione }}</td>
+          <td>{{ req.stato }}</td>
+          <td>{{ req.dataCreazione | date:'shortDate' }}</td>
+          <td>
+            <button class="btn btn-sm btn-primary me-2"
+              [disabled]="req.stato !== 'In attesa'"
+              (click)="req.stato === 'In attesa' && openEditRequestModal(req)">
+              Modifica
+            </button>
+            <button class="btn btn-sm btn-danger"
+              [disabled]="req.stato !== 'In attesa'"
+              (click)="req.stato === 'In attesa' && confirmDeleteRequest(req)">
+              Elimina
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loadingRequests && !requests.length" class="text-muted">Nessuna richiesta trovata.</div>
+  </section>
+
+  <!-- Modale per aggiunta richiesta -->
+  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showAddRequestModal ? 'block' : 'none', background: showAddRequestModal ? 'rgba(0,0,0,0.5)' : 'none'}" *ngIf="showAddRequestModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Aggiungi richiesta</h5>
+          <button type="button" class="btn-close" (click)="closeAddRequestModal()"></button>
+        </div>
+        <form [formGroup]="addRequestForm" (ngSubmit)="submitAddRequest()">
+          <div class="modal-body">
+            <div *ngIf="addRequestError" class="alert alert-danger">{{ addRequestError }}</div>
+            <div *ngIf="addRequestSuccess" class="alert alert-success">Richiesta aggiunta con successo!</div>
+            <div class="mb-3">
+              <label class="form-label">Categoria</label>
+              <select class="form-select" formControlName="categoria">
+                <option value="" disabled>Seleziona categoria</option>
+                <option *ngFor="let cat of categories" [value]="cat.id || cat._id">{{ cat.descrizione }}</option>
+              </select>
+              <div *ngIf="addRequestForm.get('categoria')?.invalid && (addRequestForm.get('categoria')?.dirty || addRequestForm.get('categoria')?.touched)" class="text-danger small">
+                Seleziona una categoria.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Oggetto</label>
+              <input type="text" class="form-control" formControlName="oggetto" />
+              <div *ngIf="addRequestForm.get('oggetto')?.invalid && (addRequestForm.get('oggetto')?.dirty || addRequestForm.get('oggetto')?.touched)" class="text-danger small">
+                L'oggetto è obbligatorio.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Quantità</label>
+              <input type="number" class="form-control" formControlName="quantity" min="1" />
+              <div *ngIf="addRequestForm.get('quantity')?.invalid && (addRequestForm.get('quantity')?.dirty || addRequestForm.get('quantity')?.touched)" class="text-danger small">
+                Inserisci una quantità valida (>0).
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Costo unitario</label>
+              <input type="number" class="form-control" formControlName="costoUnitario" min="0" step="0.01" />
+              <div *ngIf="addRequestForm.get('costoUnitario')?.invalid && (addRequestForm.get('costoUnitario')?.dirty || addRequestForm.get('costoUnitario')?.touched)" class="text-danger small">
+                Inserisci un costo valido (>=0).
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Motivazione</label>
+              <textarea class="form-control" formControlName="motivazione"></textarea>
+              <div *ngIf="addRequestForm.get('motivazione')?.invalid && (addRequestForm.get('motivazione')?.dirty || addRequestForm.get('motivazione')?.touched)" class="text-danger small">
+                La motivazione è obbligatoria.
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeAddRequestModal()">Chiudi</button>
+            <button type="submit" class="btn btn-primary" [disabled]="addRequestForm.invalid || submittingRequest">Salva richiesta</button>
+          </div>
+        </form>
+      </div>
     </div>
-    <div class="col-md-6 mb-3">
-      <button class="big-action-btn home-btn-organizzazione w-100" [disabled]="user?.isOperator" (click)="!user?.isOperator && diventaOrganizzatore()">
-        <span class="action-text">
-          <ng-container *ngIf="user?.isOperator; else diventaOp">Sei organizzatore</ng-container>
-          <ng-template #diventaOp>Diventa operatore</ng-template>
-        </span>
-      </button>
+  </div>
+
+  <!-- Modale per modifica richiesta -->
+  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showEditRequestModal ? 'block' : 'none', background: showEditRequestModal ? 'rgba(0,0,0,0.5)' : 'none'}" *ngIf="showEditRequestModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifica richiesta</h5>
+          <button type="button" class="btn-close" (click)="closeEditRequestModal()"></button>
+        </div>
+        <form [formGroup]="editRequestForm" (ngSubmit)="submitEditRequest()">
+          <div class="modal-body">
+            <div *ngIf="editRequestError" class="alert alert-danger">{{ editRequestError }}</div>
+            <div *ngIf="editRequestSuccess" class="alert alert-success">Richiesta modificata con successo!</div>
+            <div class="mb-3">
+              <label class="form-label">Categoria</label>
+              <select class="form-select" formControlName="categoria">
+                <option value="" disabled>Seleziona categoria</option>
+                <option *ngFor="let cat of categories" [value]="cat.id || cat._id">{{ cat.descrizione }}</option>
+              </select>
+              <div *ngIf="editRequestForm.get('categoria')?.invalid && (editRequestForm.get('categoria')?.dirty || editRequestForm.get('categoria')?.touched)" class="text-danger small">
+                Seleziona una categoria.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Oggetto</label>
+              <input type="text" class="form-control" formControlName="oggetto" />
+              <div *ngIf="editRequestForm.get('oggetto')?.invalid && (editRequestForm.get('oggetto')?.dirty || editRequestForm.get('oggetto')?.touched)" class="text-danger small">
+                L'oggetto è obbligatorio.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Quantità</label>
+              <input type="number" class="form-control" formControlName="quantity" min="1" />
+              <div *ngIf="editRequestForm.get('quantity')?.invalid && (editRequestForm.get('quantity')?.dirty || editRequestForm.get('quantity')?.touched)" class="text-danger small">
+                Inserisci una quantità valida (>0).
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Costo unitario</label>
+              <input type="number" class="form-control" formControlName="costoUnitario" min="0" step="0.01" />
+              <div *ngIf="editRequestForm.get('costoUnitario')?.invalid && (editRequestForm.get('costoUnitario')?.dirty || editRequestForm.get('costoUnitario')?.touched)" class="text-danger small">
+                Inserisci un costo valido (>=0).
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Motivazione</label>
+              <textarea class="form-control" formControlName="motivazione"></textarea>
+              <div *ngIf="editRequestForm.get('motivazione')?.invalid && (editRequestForm.get('motivazione')?.dirty || editRequestForm.get('motivazione')?.touched)" class="text-danger small">
+                La motivazione è obbligatoria.
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeEditRequestModal()">Chiudi</button>
+            <button type="submit" class="btn btn-primary" [disabled]="editRequestForm.invalid">Salva modifiche</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale conferma cancellazione richiesta -->
+  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showDeleteRequestModal ? 'block' : 'none', background: showDeleteRequestModal ? 'rgba(0,0,0,0.5)' : 'none'}" *ngIf="showDeleteRequestModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Conferma eliminazione richiesta</h5>
+          <button type="button" class="btn-close" (click)="closeDeleteRequestModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="deleteRequestError" class="alert alert-danger">{{ deleteRequestError }}</div>
+          <div *ngIf="deleteRequestSuccess" class="alert alert-success">Richiesta eliminata con successo!</div>
+          <p>Sei sicuro di voler eliminare la richiesta di {{ deletingRequest?.quantity }}<b>{{ deletingRequest?.oggetto }}</b>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeDeleteRequestModal()">Annulla</button>
+          <button type="button" class="btn btn-danger" (click)="doDeleteRequest()" [disabled]="deleteRequestSuccess">Conferma</button>
+        </div>
+      </div>
     </div>
   </div>
 </div> 

@@ -15,10 +15,9 @@ import { IfAuthenticatedDirective } from './directives/if-authenticated.directiv
 import { IfNotAuthenticatedDirective } from './directives/if-not-authenticated.directive';
 import { IfAuthenticatedOperatorDirective } from './directives/if-authenticated-operator.directive';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { OrganizerCheckinComponent } from './pages/organizer-checkin/organizer-checkin.component';
-import { IscrittiListComponent } from './pages/iscritti-list/iscritti-list.component';
-import { IncontriListComponent } from './pages/incontri-list/incontri-list.component';
-import { OrganizerIncontriListComponent } from './pages/organizer-incontri-list/organizer-incontri-list.component';
+import { OrganizerRequestsApprovalComponent } from './pages/organizer-requests-approval/organizer-requests-approval.component';
+import { OrganizerCategoriesComponent } from './pages/organizer-categories/organizer-categories.component';
+import { OrganizerStatisticsComponent } from './pages/organizer-statistics/organizer-statistics.component';
 
 @NgModule({
     declarations: [
@@ -32,10 +31,9 @@ import { OrganizerIncontriListComponent } from './pages/organizer-incontri-list/
         IfNotAuthenticatedDirective,
         IfAuthenticatedOperatorDirective,
         NavbarComponent,
-        OrganizerCheckinComponent,
-        IscrittiListComponent,
-        IncontriListComponent,
-        OrganizerIncontriListComponent
+        OrganizerRequestsApprovalComponent,
+        OrganizerCategoriesComponent,
+        OrganizerStatisticsComponent
     ],
     imports: [
         BrowserModule,

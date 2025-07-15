@@ -56,6 +56,9 @@ export class RegisterComponent {
                 .subscribe(user => {
                     if (user) {
                         this.registrationSuccess = true;
+                        setTimeout(() => {
+                            this.router.navigate(['/login']);
+                        }, 5000); // 5 secondi per mostrare il messaggio di successo
                     }
                 });
         } else {

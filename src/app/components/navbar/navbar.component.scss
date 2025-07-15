@@ -19,25 +19,3 @@
     right: 0 !important;
     transform: translateX(-1%);
 }
-
-.navbar-link-color {
-  color: #fff !important;
-}
-
-header#main-header, .dropdown-menu {
-  color: #fff;
-}
-
-.dropdown-menu .dropdown-item, .dropdown-menu .dropdown-item.navbar-link-color {
-  color: #111 !important;
-}
-
-.navbar-dark .navbar-link-color, .navbar-dark .h4, .navbar-dark .dropdown-toggle, .navbar-dark .dropdown-item {
-  color: #fff !important;
-}
-.navbar-light .navbar-link-color, .navbar-light .h4, .navbar-light .dropdown-toggle {
-  color: #111 !important;
-}
-.navbar-light .dropdown-menu .dropdown-item {
-  color: #111 !important;
-}

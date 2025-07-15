@@ -1,25 +1,43 @@
 <div class="container py-4">
-  <h2>Statistiche Eventi Passati</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Statistiche Richieste per Categoria</h2>
+    <button class="btn btn-secondary" routerLink="/organizer">Torna alla dashboard</button>
+  </div>
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-  <table class="table table-bordered mt-4" *ngIf="statistics.length">
-    <thead>
-      <tr>
-        <th>Titolo</th>
-        <th>Data</th>
-        <th>Iscrizioni Totali</th>
-        <th>Check-in Effettuati</th>
-        <th>Percentuale Partecipazione</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let stat of statistics">
-        <td>{{ stat.event.title }}</td>
-        <td>{{ stat.event.date | date:'dd/MM/yyyy' }}</td>
-        <td>{{ stat.totalInscriptions }}</td>
-        <td>{{ stat.checkIns }}</td>
-        <td>{{ stat.participationRate | number:'1.0-0' }}%</td>
-      </tr>
-    </tbody>
-  </table>
-  <div *ngIf="!statistics.length && !error" class="text-muted">Nessun evento passato disponibile.</div>
+  <div class="mb-3 d-flex align-items-center gap-3">
+    <div>
+      <label>Anno:</label>
+      <input type="number" [(ngModel)]="selectedYear" (change)="loadStats()" min="2000" max="2100" class="form-control d-inline-block w-auto ms-2" />
+    </div>
+    <div *ngIf="categories.length">
+      <label>Categoria:</label>
+      <select class="form-select d-inline-block w-auto ms-2" [(ngModel)]="selectedCategory">
+        <option value="">Tutte</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+  </div>
+  <div *ngIf="loading">Caricamento statistiche...</div>
+  <div *ngIf="!loading && filteredCategories.length">
+    <div *ngFor="let cat of filteredCategories" class="mb-5">
+      <h4>{{ cat }}</h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Mese</th>
+            <th>Numero richieste</th>
+            <th>Costo totale (€)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of getStatsForCategory(cat)">
+            <td>{{ getMonthName(s.mese) }}</td>
+            <td>{{ s.numeroRichieste }}</td>
+            <td>{{ s.totaleCosto | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="!loading && !filteredCategories.length && !error" class="text-muted">Nessun dato disponibile per l'anno/categoria selezionati.</div>
 </div> 

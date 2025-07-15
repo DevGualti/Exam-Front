@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RequestsService, Request } from '../../services/requests.service';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-organizer-dashboard',
-  templateUrl: './organizer-dashboard.component.html',
-  styleUrls: ['./organizer-dashboard.component.scss']
+  selector: 'app-organizer-requests-approval',
+  templateUrl: './organizer-requests-approval.component.html',
+  styleUrls: ['./organizer-requests-approval.component.scss']
 })
-export class OrganizerDashboardComponent implements OnInit {
+export class OrganizerRequestsApprovalComponent implements OnInit {
   requests: Request[] = [];
   error: string = '';
   loadingRequests = false;
@@ -24,10 +23,7 @@ export class OrganizerDashboardComponent implements OnInit {
   deleteRequestError = '';
   deleteRequestSuccess = false;
 
-  constructor(
-    private requestsService: RequestsService,
-    public auth: AuthService
-  ) {}
+  constructor(private requestsService: RequestsService) {}
 
   ngOnInit(): void {
     this.loadRequests();
@@ -35,7 +31,7 @@ export class OrganizerDashboardComponent implements OnInit {
 
   loadRequests() {
     this.loadingRequests = true;
-    this.requestsService.getUserRequests().subscribe({
+    this.requestsService.getRequestsToApprove().subscribe({
       next: (requests) => {
         this.requests = requests;
         this.loadingRequests = false;
@@ -103,21 +99,6 @@ export class OrganizerDashboardComponent implements OnInit {
     });
   }
 
-  deleteRequest(req: Request) {
-    if (!window.confirm('Sei sicuro di voler eliminare questa richiesta?')) return;
-    this.loadingRequests = true;
-    this.requestsService.deleteRequest(req.id!).subscribe({
-      next: () => {
-        this.loadRequests();
-        this.loadingRequests = false;
-      },
-      error: () => {
-        this.error = 'Errore durante l\'eliminazione della richiesta';
-        this.loadingRequests = false;
-      }
-    });
-  }
-
   confirmDeleteRequest(req: Request) {
     this.deletingRequest = req;
     this.deleteRequestError = '';
@@ -128,6 +109,14 @@ export class OrganizerDashboardComponent implements OnInit {
   closeDeleteRequestModal() {
     this.showDeleteRequestModal = false;
     this.deletingRequest = null;
+  }
+
+  getUserName(idRichiedente: any): string {
+    if (!idRichiedente) return '';
+    if (typeof idRichiedente === 'object' && 'name' in idRichiedente) {
+      return idRichiedente.name;
+    }
+    return idRichiedente;
   }
 
   doDeleteRequest() {
@@ -144,13 +133,5 @@ export class OrganizerDashboardComponent implements OnInit {
         this.deleteRequestError = err.error?.message || 'Errore durante la cancellazione della richiesta';
       }
     });
-  }
-
-  getUserName(idRichiedente: any): string {
-    if (!idRichiedente) return '';
-    if (typeof idRichiedente === 'object' && 'name' in idRichiedente) {
-      return idRichiedente.name;
-    }
-    return idRichiedente;
   }
 } 

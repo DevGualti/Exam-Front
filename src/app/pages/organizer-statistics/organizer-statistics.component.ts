@@ -1,66 +1,129 @@
 import { Component, OnInit } from '@angular/core';
-import { EventsService, Event } from '../../services/events.service';
-import { InscriptionsService, Inscription } from '../../services/inscriptions.service';
+import { RequestsService } from '../../services/requests.service';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
+
+interface StatRecord {
+  anno: number;
+  mese: number;
+  categoria: string;
+  numeroRichieste: number;
+  totaleCosto: number;
+}
 
 @Component({
   selector: 'app-organizer-statistics',
-  templateUrl: './organizer-statistics.component.html'
+  templateUrl: './organizer-statistics.component.html',
+  styleUrls: ['./organizer-statistics.component.scss']
 })
 export class OrganizerStatisticsComponent implements OnInit {
-  pastEvents: Event[] = [];
-  inscriptions: Inscription[] = [];
-  statistics: Array<{
-    event: Event;
-    totalInscriptions: number;
-    checkIns: number;
-    participationRate: number;
-  }> = [];
+  stats: StatRecord[] = [];
   error: string | null = null;
+  loading = false;
+  selectedYear: number = new Date().getFullYear();
+  categories: string[] = [];
+  monthLabels = [
+    'Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu',
+    'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'
+  ];
+  selectedCategory: string = '';
+  get filteredCategories() {
+    if (!this.selectedCategory) return this.categories;
+    return this.categories.filter(c => c === this.selectedCategory);
+  }
 
-  constructor(
-    private eventsService: EventsService,
-    private inscriptionsService: InscriptionsService
-  ) {}
+  chartData: { [cat: string]: ChartConfiguration<'bar'>['data'] } = {};
+  chartOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    plugins: {
+      legend: { display: true },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            if (context.dataset.label === 'Costo totale') {
+              return `${context.dataset.label}: €${context.parsed.y.toLocaleString('it-IT', {minimumFractionDigits: 2})}`;
+            }
+            return `${context.dataset.label}: ${context.parsed.y}`;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Numero richieste' }
+      },
+      y1: {
+        beginAtZero: true,
+        position: 'right',
+        grid: { drawOnChartArea: false },
+        title: { display: true, text: 'Costo totale (€)' }
+      }
+    }
+  };
+
+  constructor(private requestsService: RequestsService) {}
 
   ngOnInit() {
-    this.loadStatistics();
+    this.loadStats();
   }
 
-  loadStatistics() {
-    this.inscriptionsService.getAllInscriptions().subscribe({
-      next: (inscriptions) => {
-        this.inscriptions = inscriptions;
-        this.eventsService.getEvents().subscribe({
-          next: (events: Event[]) => {
-            const now = new Date();
-            this.pastEvents = events.filter(event => new Date(event.date) < now);
-            this.calculateStatistics();
-          },
-          error: () => this.error = 'Errore nel caricamento degli eventi'
-        });
+  loadStats() {
+    this.loading = true;
+    this.error = null;
+    this.requestsService.getStats(this.selectedYear).subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.categories = Array.from(new Set(data.map(d => d.categoria)));
+        this.prepareChartData();
+        this.loading = false;
       },
-      error: () => this.error = 'Errore nel caricamento delle iscrizioni'
+      error: (err) => {
+        this.error = err.error?.message || 'Errore nel caricamento delle statistiche';
+        this.loading = false;
+      }
     });
   }
 
-  calculateStatistics() {
-    this.statistics = this.pastEvents.map(event => {
-      const inscriptions = this.inscriptions.filter(ins => {
-        const idEvent = ins.idEvent as any;
-        if (idEvent && typeof idEvent === 'object' && 'id' in idEvent) {
-          return idEvent.id === event.id;
-        }
-        return String(idEvent) === String(event.id);
-      });
-      const totalInscriptions = inscriptions.length;
-      const checkIns = inscriptions.filter(ins => ins.checkedIn).length;
-      const participationRate = totalInscriptions > 0 ? (checkIns / totalInscriptions) * 100 : 0;
-      return {
-        event,
-        totalInscriptions,
-        checkIns,
-        participationRate
+  prepareChartData() {
+    this.chartData = {};
+    for (const cat of this.categories) {
+      const catStats = this.stats.filter(s => s.categoria === cat);
+      // Array di 12 mesi, default 0
+      const richiestePerMese = Array(12).fill(0);
+      const costoPerMese = Array(12).fill(0);
+      for (const s of catStats) {
+        richiestePerMese[s.mese - 1] = s.numeroRichieste;
+        costoPerMese[s.mese - 1] = s.totaleCosto;
+      }
+      this.chartData[cat] = {
+        labels: this.monthLabels,
+        datasets: [
+          {
+            label: 'Numero richieste',
+            data: richiestePerMese,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            yAxisID: 'y',
+          },
+          {
+            label: 'Costo totale',
+            data: costoPerMese,
+            backgroundColor: 'rgba(255, 159, 64, 0.7)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1,
+            yAxisID: 'y1',
+          }
+        ]
       };
-    });
+    }
+  }
+
+  getStatsForCategory(cat: string) {
+    return this.stats.filter(x => x.categoria === cat);
+  }
+
+  getMonthName(mese: number): string {
+    return this.monthLabels[mese - 1] || '';
   }
 } 

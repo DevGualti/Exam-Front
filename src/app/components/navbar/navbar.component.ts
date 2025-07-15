@@ -1,25 +1,19 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input, Output } from '@angular/core';
 import { AuthService, User } from '../../services/auth.service';
-import { Router, NavigationEnd } from '@angular/router';
 @Component({
     selector: 'app-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.scss', '../../app.component.scss']
 })
 export class NavbarComponent {
+
+    @Input()
     user: User | null = null;
+
     isScrolled = false;
     isDropdownOpen = false;
-    navbarLight = false;
 
-    constructor(private authSrv: AuthService, private router: Router) {
-        this.authSrv.currentUser$.subscribe(u => this.user = u);
-        this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd) {
-                this.navbarLight = !['/dashboard', '/'].includes(event.urlAfterRedirects.split('?')[0]);
-            }
-        });
-    }
+    constructor(private authSrv: AuthService) { }
 
     @HostListener('window:scroll', [])
     onWindowScroll() {
@@ -37,4 +31,5 @@ export class NavbarComponent {
     logout() {
         this.authSrv.logout();
     }
+
 }

@@ -1,0 +1,109 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gestione Categorie</h2>
+    <button class="btn btn-secondary" routerLink="/organizer">Torna alla dashboard</button>
+  </div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <section>
+    <h3>Categorie</h3>
+    <button class="btn btn-success mb-3" (click)="openAddModal()">Aggiungi categoria</button>
+    <div *ngIf="loading">Caricamento categorie...</div>
+    <table class="table table-bordered" *ngIf="categories.length">
+      <thead>
+        <tr>
+          <th>Descrizione</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categories">
+          <td>{{ cat.descrizione }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm me-2" (click)="openEditModal(cat)">Modifica</button>
+            <button class="btn btn-danger btn-sm" (click)="confirmDelete(cat)">Elimina</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loading && !categories.length" class="text-muted">Nessuna categoria trovata.</div>
+  </section>
+</div>
+
+<!-- Modale aggiunta categoria -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showAddModal ? 'block' : 'none', background: showAddModal ? 'rgba(0,0,0,0.5)' : 'none'}" *ngIf="showAddModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Aggiungi categoria</h5>
+        <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+      </div>
+      <form [formGroup]="addForm" (ngSubmit)="submitAdd()">
+        <div class="modal-body">
+          <div *ngIf="addError" class="alert alert-danger">{{ addError }}</div>
+          <div *ngIf="addSuccess" class="alert alert-success">Categoria aggiunta con successo!</div>
+          <div class="mb-3">
+            <label class="form-label">Descrizione</label>
+            <input type="text" class="form-control" formControlName="descrizione" />
+            <div *ngIf="addForm.get('descrizione')?.invalid && (addForm.get('descrizione')?.dirty || addForm.get('descrizione')?.touched)" class="text-danger small">
+              La descrizione è obbligatoria.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Chiudi</button>
+          <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid">Salva categoria</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modale modifica categoria -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showEditModal ? 'block' : 'none', background: showEditModal ? 'rgba(0,0,0,0.5)' : 'none'}" *ngIf="showEditModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifica categoria</h5>
+        <button type="button" class="btn-close" (click)="closeEditModal()"></button>
+      </div>
+      <form [formGroup]="editForm" (ngSubmit)="submitEdit()">
+        <div class="modal-body">
+          <div *ngIf="editError" class="alert alert-danger">{{ editError }}</div>
+          <div *ngIf="editSuccess" class="alert alert-success">Categoria modificata con successo!</div>
+          <div class="mb-3">
+            <label class="form-label">Descrizione</label>
+            <input type="text" class="form-control" formControlName="descrizione" />
+            <div *ngIf="editForm.get('descrizione')?.invalid && (editForm.get('descrizione')?.dirty || editForm.get('descrizione')?.touched)" class="text-danger small">
+              La descrizione è obbligatoria.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEditModal()">Chiudi</button>
+          <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Salva modifiche</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modale conferma cancellazione categoria -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showDeleteModal ? 'block' : 'none', background: showDeleteModal ? 'rgba(0,0,0,0.5)' : 'none'}" *ngIf="showDeleteModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma eliminazione categoria</h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="deleteError" class="alert alert-danger">{{ deleteError }}</div>
+        <div *ngIf="deleteSuccess" class="alert alert-success">Categoria eliminata con successo!</div>
+        <p>Sei sicuro di voler eliminare la categoria <b>{{ deletingCategory?.descrizione }}</b>?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Annulla</button>
+        <button type="button" class="btn btn-danger" (click)="doDelete()" [disabled]="deleteSuccess">Conferma</button>
+      </div>
+    </div>
+  </div>
+</div> 

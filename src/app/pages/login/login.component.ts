@@ -38,20 +38,26 @@ export class LoginComponent {
     window.location.reload();
   }
   login() {
+    this.loginError = '';
     this.isSubmitted = true;
-    if (this.loginForm.invalid) return;
-    const { email, password } = this.loginForm.value;
-    if (!email || !password) {
-      this.loginError = 'Inserisci email e password';
-      return;
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      this.authSrv
+        .login(email!, password!)
+        .pipe(
+          catchError((err) => {
+            this.loginError = err.error.message || 'Email o password errati';
+            return throwError(() => err);
+          })
+        )
+        .subscribe((user) => {
+          // Redirect in base al ruolo
+          if (user.isOperator) {
+            this.router.navigate(['/organizer']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          }
+        });
     }
-    this.authSrv.login(email, password).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.loginError = err?.error?.message || 'Errore di autenticazione';
-      }
-    });
   }
 }

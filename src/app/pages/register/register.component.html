@@ -4,13 +4,17 @@
         <!-- Colonna login -->
         <div class="col-md-6 login-form-wrapper my-bg-black">
             <div class="login-box">
-                <h2 class="mb-4 text-center text-white bai-jamjuree-semibold">Accedi a <a [routerLink]="['/']"
-                        class="bai-jamjuree-bold-italic my-secondary-color">RideClone</a></h2>
+                <h2 class="mb-4 text-center text-white bai-jamjuree-semibold">Registrati a <a [routerLink]="['/']"
+                        class="bai-jamjuree-bold-italic my-secondary-color">Gestione Richieste by Gualti</a></h2>
                 <form [formGroup]="signUpForm" (ngSubmit)="registerSubmit()">
                     <div class="mb-3">
                         <label for="username" class="form-label text-white bai-jamjuree-medium">Nome Cognome</label>
                         <input type="text" class="form-control bai-jamjuree-medium" id="name" formControlName="name"
                             placeholder="Mario Rossi" [class.is-invalid]="signUpForm.get('name')?.invalid" />
+                        <div *ngIf="signUpForm.get('name')?.invalid && (signUpForm.get('name')?.dirty || signUpForm.get('name')?.touched)" class="text-danger small">
+                          <span *ngIf="signUpForm.get('name')?.errors?.['required']">Il nome è obbligatorio.</span>
+                          <span *ngIf="signUpForm.get('name')?.errors?.['minlength']">Il nome deve essere almeno di 3 caratteri.</span>
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -20,6 +24,10 @@
                                     && (signUpForm.get('email')?.dirty
                                     || signUpForm.get('email')?.touched
                                     || signUpForm)" />
+                        <div *ngIf="signUpForm.get('email')?.invalid && (signUpForm.get('email')?.dirty || signUpForm.get('email')?.touched)" class="text-danger small">
+                          <span *ngIf="signUpForm.get('email')?.errors?.['required']">L'email è obbligatoria.</span>
+                          <span *ngIf="signUpForm.get('email')?.errors?.['email']">Inserisci un'email valida.</span>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label text-white bai-jamjuree-medium">Password</label>
@@ -28,6 +36,9 @@
                             && (signUpForm.get('password')?.dirty
                             || signUpForm.get('password')?.touched
                             || isSubmitted)" />
+                        <div *ngIf="signUpForm.get('password')?.invalid && (signUpForm.get('password')?.dirty || signUpForm.get('password')?.touched)" class="text-danger small">
+                          <span *ngIf="signUpForm.get('password')?.errors?.['required']">La password è obbligatoria.</span>
+                        </div>
                     </div>
 
                     <div class="mb-5">
@@ -38,6 +49,12 @@
                         && (signUpForm.get('confirmpassword')?.dirty
                         || signUpForm.get('confirmpassword')?.touched
                         || isSubmitted)">
+                        <div *ngIf="signUpForm.get('confirmpassword')?.invalid && (signUpForm.get('confirmpassword')?.dirty || signUpForm.get('confirmpassword')?.touched)" class="text-danger small">
+                          <span *ngIf="signUpForm.get('confirmpassword')?.errors?.['required']">La conferma password è obbligatoria.</span>
+                        </div>
+                        <div *ngIf="signUpForm.errors?.['passwordMismatch'] && (signUpForm.get('confirmpassword')?.dirty || signUpForm.get('confirmpassword')?.touched)" class="text-danger small">
+                          Le password non coincidono.
+                        </div>
                     </div>
 
                     <div *ngIf="registrationSuccess"
