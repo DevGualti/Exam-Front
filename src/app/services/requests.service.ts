@@ -20,7 +20,7 @@ export interface Request {
   providedIn: 'root',
 })
 export class RequestsService {
-  conStr = 'http://localhost:3001/api'; // Adatta se serve
+  conStr = 'https://mirko-gualtiero-esame-backend.onrender.com/api'; // Adatta se serve
 
   constructor(private http: HttpClient) {}
 

@@ -9,7 +9,6 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { EmployeeDashboardComponent } from './pages/employee-dashboard/employee-dashboard.component';
 import { OrganizerDashboardComponent } from './pages/organizer-dashboard/organizer-dashboard.component';
-import { EventStatisticsComponent } from './pages/event-statistics/event-statistics.component';
 import { AuthInterceptor } from './utils/auth.interceptor';
 import { IfAuthenticatedDirective } from './directives/if-authenticated.directive';
 import { IfNotAuthenticatedDirective } from './directives/if-not-authenticated.directive';
@@ -26,7 +25,6 @@ import { OrganizerStatisticsComponent } from './pages/organizer-statistics/organ
         RegisterComponent,
         EmployeeDashboardComponent,
         OrganizerDashboardComponent,
-        EventStatisticsComponent,
         IfAuthenticatedDirective,
         IfNotAuthenticatedDirective,
         IfAuthenticatedOperatorDirective,
